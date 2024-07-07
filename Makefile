@@ -2,8 +2,8 @@ OS_TYPE := $(shell uname -s)
 BASE_DIR = ./
 OBJ_DIR = ./build
 BUILD_DIR = ./bin
-X265_DIR = ../x265/build/linux
-CFLAGS = -O2 -fPIC -Iinclude -Iwrapper -I$(X265_DIR)
+X265_DIR = ../x265
+CFLAGS = -O2 -fPIC -Iinclude -Iwrapper -I$(X265_DIR)/source
 
 ifeq ($(OS_TYPE), Linux)
 LDFLAGS = -shared -lpthread
@@ -12,7 +12,7 @@ LDFLAGS = -dynamiclib
 endif
 
 TARGET = $(BUILD_DIR)/x265_encoder_10b.dvcp
-LDFLAGS += -L$(X265_DIR) -lx265-static.lib
+LDFLAGS += -L$(X265_DIR)/build/linux -lx265-static.lib
 
 .PHONY: all
 
