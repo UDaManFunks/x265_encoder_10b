@@ -1,4 +1,6 @@
-x265_encoder for Davinci Resolve Studio (based on Black Magic's x264_encoder_plugin sample)
+x265_encoder_10b for Davinci Resolve Studio (based on Black Magic's x264_encoder_plugin sample)
+
+NOTE - supports the 10-bit MAIN10 profile
 
 [WINDOWS]
 
@@ -31,9 +33,11 @@ Create Directory C:\VideoEditingUtils\x265_plugin_build
 
 > in line number 5, change "target_processor='amd64'" to "target_processor='x64'"
 
-> in line 24, append the following defintions -DEXPORT_C_API=ON -DENABLE_SHARED=OFF -DENABLE_CLI=OFF -DSTATIC_LINK_CRT=ON 
+> in line 24, append the following defintions -DEXPORT_C_API=ON -DENABLE_SHARED=OFF -DENABLE_CLI=OFF -DSTATIC_LINK_CRT=ON -DHIGH_BIT_DEPTH=ON
 
-Note: make sure there's a white space between these defintions and ../source
+Note: the definition -DHIGH_BIT_DEPTH=ON compiles the library for 10bit support
+
+Note: make sure there's a white space between these defintions and ../source.  
 
 > comment out line 16-21
 
@@ -44,16 +48,18 @@ Note: make sure there's a white space between these defintions and ../source
 6) cd /C/VideoEditingUtils/x265_plugin_build/x265/build/msys-cl
 7) "./make-Makefiles-64-bit.sh"
 
+Note: If you've built the 8-bit version of x265 before, delete the folders and files in the msys-cl folder and make sure only the two files (make-Makefiles-64-bit.sh, make-Makefiles.sh) exist before running the command
+
 [Download x265_encoder]
 
 1) run "MSYS2 MSYS" - type it in the search bar in the Windows Task Bar
 2) cd /C/VideoEditingUtils/x265_plugin_build
-3) git clone https://github.com/UDaManFunks/x265_encoder
+3) git clone https://github.com/UDaManFunks/x265_encoder_10b
 
 [Compile x265_encoder]
 
 1) run the "x64 Native Tools Command Prompt for VS 2022" - type it in the seach bar in the Windows Task Bar
-2) Inside the command prompt, type "cd /d C:\VideoEditingUtils\x265_plugin_build\x265_encoder"
+2) Inside the command prompt, type "cd /d C:\VideoEditingUtils\x265_plugin_build\x265_encoder_10b"
 3) nmake /f NMakefile
    
 [Packaging / Installing]
@@ -62,10 +68,10 @@ Note: make sure there's a white space between these defintions and ../source
 
   Note: you can open up %PROGRAMDATA% folder via explorer by typing it verbatim in a run window (Win + R) 
 
-2) Create a folder named "x265_encoder.dvcp.bundle" under the IOPlugins folder
-3) Create a folder named "Contents" under the "x265_encoder.dvcp.bundle" folder
+2) Create a folder named "x265_encoder_10b.dvcp.bundle" under the IOPlugins folder
+3) Create a folder named "Contents" under the "x265_encoder_10b.dvcp.bundle" folder
 4) Create a folder named "Win64" under the "Contents" folder
-5) Copy the built plugin from C:\VideoEditingUtils\x265_plugin_build\x265_encoder\bin\x265_encoder.dvcp" and place it in the "Win64" folder (which you've created via Step 1-4)
+5) Copy the built plugin from C:\VideoEditingUtils\x265_plugin_build\x265_encoder_10b\bin\x265_encoder_10b.dvcp" and place it in the "Win64" folder (which you've created via Step 1-4)
 6) Start Davinci Resolve Studio
    
-You can export using X265 if you pick "QUICKTIME" or "MP4" as your FORMAT in Davnci Resolve, then selecting the "X265 (8-bit)" Codec option.
+You can export using X265 if you pick "QUICKTIME" or "MP4" as your FORMAT in Davnci Resolve, then selecting the "X265 (10-bit)" Codec option.
