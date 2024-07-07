@@ -517,7 +517,7 @@ void X265Encoder10b::SetupContext(bool p_IsFinalPass)
 	{
 		logMessage.str("");
 		logMessage.clear();
-		logMessage << logMessagePrefix << " pProfile = " << pProfile << " :: m_ColorModel = " + m_ColorModel;
+		logMessage << logMessagePrefix << " pProfile = " << pProfile << " :: m_ColorModel = " << m_ColorModel;
 		g_Log(logLevelInfo, logMessage.str().c_str());
 	}
 
@@ -726,13 +726,6 @@ StatusCode X265Encoder10b::DoProcess(HostBufferRef* p_pBuff)
 			g_Log(logLevelError, "X265 Plugin 10Bit :: No data to encode");
 			p_pBuff->UnlockBuffer();
 			return errUnsupported;
-		}
-
-		{
-			logMessage.str("");
-			logMessage.clear();
-			logMessage << logMessagePrefix << " bufSize = " << bufSize;
-			g_Log(logLevelInfo, logMessage.str().c_str());
 		}
 
 		uint32_t width = 0;
