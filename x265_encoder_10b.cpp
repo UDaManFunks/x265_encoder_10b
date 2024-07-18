@@ -711,7 +711,7 @@ StatusCode X265Encoder10b::DoProcess(HostBufferRef* p_pBuff)
 
 		int iPixelBytes = m_pSettings->GetBitDepth() > 8 ? 2 : 1;
 
-		int ySize = width * height;
+		uint32_t  ySize = width * height;
 
 		std::vector<uint8_t> uPlane;
 		uPlane.reserve((ySize / 4) * iPixelBytes);
