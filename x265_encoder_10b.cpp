@@ -379,10 +379,10 @@ StatusCode X265Encoder10b::s_RegisterCodecs(HostListRef* p_pList)
 	codecInfo.SetProperty(pIOPropUUID, propTypeUInt8, X265Encoder10b::s_UUID, 16);
 
 	const char* pCodecName = "Auto";
-	codecInfo.SetProperty(pIOPropName, propTypeString, pCodecName, strlen(pCodecName));
+	codecInfo.SetProperty(pIOPropName, propTypeString, pCodecName, static_cast<int>(strlen(pCodecName)));
 
 	const char* pCodecGroup = "X265 (10-bit)";
-	codecInfo.SetProperty(pIOPropGroup, propTypeString, pCodecGroup, strlen(pCodecGroup));
+	codecInfo.SetProperty(pIOPropGroup, propTypeString, pCodecGroup, static_cast<int>(strlen(pCodecGroup)));
 
 	uint32_t vFourCC = 'hvc1';
 	codecInfo.SetProperty(pIOPropFourCC, propTypeUInt32, &vFourCC, 1);
@@ -400,7 +400,7 @@ StatusCode X265Encoder10b::s_RegisterCodecs(HostListRef* p_pList)
 	std::vector<uint8_t> dataRangeVec;
 	dataRangeVec.push_back(0);
 	dataRangeVec.push_back(1);
-	codecInfo.SetProperty(pIOPropDataRange, propTypeUInt8, dataRangeVec.data(), dataRangeVec.size());
+	codecInfo.SetProperty(pIOPropDataRange, propTypeUInt8, dataRangeVec.data(), static_cast<int>(dataRangeVec.size()));
 
 	uint32_t vBitDepth = x265_max_bit_depth;
 	codecInfo.SetProperty(pIOPropBitDepth, propTypeUInt32, &vBitDepth, 1);
@@ -425,7 +425,7 @@ StatusCode X265Encoder10b::s_RegisterCodecs(HostListRef* p_pList)
 		}
 	}
 
-	codecInfo.SetProperty(pIOPropContainerList, propTypeString, valStrings.c_str(), valStrings.size());
+	codecInfo.SetProperty(pIOPropContainerList, propTypeString, valStrings.c_str(), static_cast<int>(valStrings.size()));
 
 	if (!p_pList->Append(&codecInfo)) {
 		return errFail;
@@ -482,7 +482,7 @@ StatusCode X265Encoder10b::DoInit(HostPropertyCollectionRef* p_pProps)
 StatusCode X265Encoder10b::DoOpen(HostBufferRef* p_pBuff)
 {
 
-	char* logMessagePrefix = "X265 Plugin 10Bit :: DoOpen";
+	const char* logMessagePrefix = "X265 Plugin 10Bit :: DoOpen";
 
 	g_Log(logLevelInfo, logMessagePrefix);
 
@@ -533,7 +533,7 @@ StatusCode X265Encoder10b::DoOpen(HostBufferRef* p_pBuff)
 
 		std::vector<uint8_t> cookie;
 
-		for (int i = 0; i < numNals; i++) {
+		for (uint32_t i = 0; i < numNals; i++) {
 
 			if (pNals[i].type == NAL_UNIT_PREFIX_SEI) {
 				g_Log(logLevelInfo, "X265 Plugin 10Bit :: DoOpen :: continue");
@@ -550,7 +550,7 @@ StatusCode X265Encoder10b::DoOpen(HostBufferRef* p_pBuff)
 		}
 
 		if (!cookie.empty()) {
-			p_pBuff->SetProperty(pIOPropMagicCookie, propTypeUInt8, &cookie[0], cookie.size());
+			p_pBuff->SetProperty(pIOPropMagicCookie, propTypeUInt8, &cookie[0], static_cast<int>(cookie.size()));
 			uint32_t fourCC = 0;
 			p_pBuff->SetProperty(pIOPropMagicCookieType, propTypeUInt32, &fourCC, 1);
 		}
@@ -572,7 +572,7 @@ StatusCode X265Encoder10b::DoOpen(HostBufferRef* p_pBuff)
 void X265Encoder10b::SetupContext(bool p_IsFinalPass)
 {
 
-	char* logMessagePrefix = "X265 Plugin 10Bit :: SetupContext";
+	const char* logMessagePrefix = "X265 Plugin 10Bit :: SetupContext";
 
 	g_Log(logLevelInfo, "%s :: p_isFinalPass = %d", logMessagePrefix, p_IsFinalPass);
 
@@ -649,7 +649,7 @@ void X265Encoder10b::SetupContext(bool p_IsFinalPass)
 
 StatusCode X265Encoder10b::DoProcess(HostBufferRef* p_pBuff)
 {
-	char* logMessagePrefix = "X265 Plugin 10Bit :: DoProcess";
+	const char* logMessagePrefix = "X265 Plugin 10Bit :: DoProcess";
 
 	if (m_Error != errNone) {
 		return m_Error;
@@ -722,7 +722,7 @@ StatusCode X265Encoder10b::DoProcess(HostBufferRef* p_pBuff)
 		uint8_t* uvSrc = pSrc;
 		uvSrc += (ySize * iPixelBytes);
 
-		for (int i = 0; i < (ySize / 4) * 2 * iPixelBytes; i += 4) {
+		for (uint32_t i = 0; i < (ySize / 4) * 2 * iPixelBytes; i += 4) {
 
 			uPlane.push_back(uvSrc[0]);
 			uPlane.push_back(uvSrc[1]);
@@ -807,17 +807,4 @@ void X265Encoder10b::DoFlush()
 	if (m_PassesDone == 1) {
 		SetupContext(true /* isFinalPass */);
 	}
-}
-
-std::string X265Encoder10b::ConvertUINT8ToHexStr(const uint8_t* v, const size_t s) {
-
-	std::stringstream ss;
-
-	ss << std::hex << std::setfill('0');
-
-	for (int i = 0; i < s; i++) {
-		ss << std::hex << std::setw(2) << static_cast<int>(v[i]);
-	}
-
-	return ss.str();
 }
