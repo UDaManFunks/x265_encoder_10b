@@ -353,14 +353,9 @@ StatusCode X265Encoder10b::s_GetEncoderSettings(HostPropertyCollectionRef* p_pVa
 StatusCode X265Encoder10b::s_RegisterCodecs(HostListRef* p_pList)
 {
 
-	std::string logMessagePrefix = "X265 Plugin 10Bit :: s_RegisterCodecs :: ";
-	std::ostringstream logMessage;
+	const char* logMessagePrefix = "X265 Plugin 10Bit :: s_RegisterCodecs";
 
-	{
-		logMessage << logMessagePrefix << " x265_ver_str = " << x265_version_str << " :: x265_max_bit_depth = " << x265_max_bit_depth;
-		g_Log(logLevelInfo, logMessage.str().c_str());
-	}
-
+	g_Log(logLevelInfo, "%s :: x265_ver_str = %s :: x265_max_bit_depth = %d", logMessagePrefix, x265_version_str, x265_max_bit_depth);
 
 	HostPropertyCollectionRef codecInfo;
 	if (!codecInfo.IsValid()) {
@@ -368,11 +363,7 @@ StatusCode X265Encoder10b::s_RegisterCodecs(HostListRef* p_pList)
 	}
 
 	if (x265_max_bit_depth != 10) {
-
-		logMessage.str("");
-		logMessage.clear();
-		logMessage << logMessagePrefix << " x265 library linked to this plugin does not support 10-bit bit depth";
-
+		g_Log(logLevelError, "%s :: x265 library linked to this plugin does not support 10-bit bit depth");
 		return errAlloc;
 	}
 
@@ -402,7 +393,10 @@ StatusCode X265Encoder10b::s_RegisterCodecs(HostListRef* p_pList)
 	dataRangeVec.push_back(1);
 	codecInfo.SetProperty(pIOPropDataRange, propTypeUInt8, dataRangeVec.data(), static_cast<int>(dataRangeVec.size()));
 
-	uint8_t vBitDepth = 16;
+	uint32_t vBitDepth = x265_max_bit_depth;
+	codecInfo.SetProperty(pIOPropBitDepth, propTypeUInt32, &vBitDepth, 1);
+
+	vBitDepth = 16;
 	codecInfo.SetProperty(pIOPropBitsPerSample, propTypeUInt32, &vBitDepth, 1);
 
 	const uint32_t temp = 0;
@@ -470,8 +464,10 @@ StatusCode X265Encoder10b::DoInit(HostPropertyCollectionRef* p_pProps)
 {
 	g_Log(logLevelInfo, "X265 Plugin 10Bit :: DoInit");
 
+	/*
 	uint32_t vColorModel = clrNV12;
 	p_pProps->SetProperty(pIOPropColorModel, propTypeUInt32, &vColorModel, 1);
+	*/
 
 	return errNone;
 }
@@ -502,6 +498,13 @@ StatusCode X265Encoder10b::DoOpen(HostBufferRef* p_pBuff)
 		m_IsMultiPass = true;
 		isMultiPass = 1;
 	}
+
+	uint8_t vBitDepth = m_pSettings->GetBitDepth();
+	p_pBuff->SetProperty(pIOPropBitDepth, propTypeUInt32, &vBitDepth, 1);
+	vBitDepth = 16;
+	p_pBuff->SetProperty(pIOPropBitsPerSample, propTypeUInt32, &vBitDepth, 1);
+
+	g_Log(logLevelInfo, "%s :: bitDepth = %d", logMessagePrefix, m_pSettings->GetBitDepth());
 
 	StatusCode sts = p_pBuff->SetProperty(pIOPropMultiPass, propTypeUInt8, &isMultiPass, 1);
 	if (sts != errNone) {
@@ -697,7 +700,7 @@ StatusCode X265Encoder10b::DoProcess(HostBufferRef* p_pBuff)
 		x265_picture_init(m_pParam, &inPic);
 		inPic.bitDepth = 16;
 
-		// NV12 (why 16-bit? instead of just 10?)  > I420 (10-bit)
+		// NV12 (why 16-bit? instead opf just 10?)  > I420 (10-bit)
 
 		uint8_t* pSrc = reinterpret_cast<uint8_t*>(const_cast<char*>(pBuf));
 
