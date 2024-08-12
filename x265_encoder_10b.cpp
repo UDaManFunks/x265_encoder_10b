@@ -402,10 +402,7 @@ StatusCode X265Encoder10b::s_RegisterCodecs(HostListRef* p_pList)
 	dataRangeVec.push_back(1);
 	codecInfo.SetProperty(pIOPropDataRange, propTypeUInt8, dataRangeVec.data(), static_cast<int>(dataRangeVec.size()));
 
-	uint32_t vBitDepth = x265_max_bit_depth;
-	codecInfo.SetProperty(pIOPropBitDepth, propTypeUInt32, &vBitDepth, 1);
-
-	vBitDepth = 16;
+	uint8_t vBitDepth = 16;
 	codecInfo.SetProperty(pIOPropBitsPerSample, propTypeUInt32, &vBitDepth, 1);
 
 	const uint32_t temp = 0;
@@ -505,13 +502,6 @@ StatusCode X265Encoder10b::DoOpen(HostBufferRef* p_pBuff)
 		m_IsMultiPass = true;
 		isMultiPass = 1;
 	}
-
-	uint8_t vBitDepth = m_pSettings->GetBitDepth();
-	p_pBuff->SetProperty(pIOPropBitDepth, propTypeUInt32, &vBitDepth, 1);
-	vBitDepth = 16;
-	p_pBuff->SetProperty(pIOPropBitsPerSample, propTypeUInt32, &vBitDepth, 1);
-
-	g_Log(logLevelInfo, "%s :: bitDepth = %d", logMessagePrefix, m_pSettings->GetBitDepth());
 
 	StatusCode sts = p_pBuff->SetProperty(pIOPropMultiPass, propTypeUInt8, &isMultiPass, 1);
 	if (sts != errNone) {
@@ -707,7 +697,7 @@ StatusCode X265Encoder10b::DoProcess(HostBufferRef* p_pBuff)
 		x265_picture_init(m_pParam, &inPic);
 		inPic.bitDepth = 16;
 
-		// NV12 (why 16-bit? instead opf just 10?)  > I420 (10-bit)
+		// NV12 (why 16-bit? instead of just 10?)  > I420 (10-bit)
 
 		uint8_t* pSrc = reinterpret_cast<uint8_t*>(const_cast<char*>(pBuf));
 
@@ -769,8 +759,6 @@ StatusCode X265Encoder10b::DoProcess(HostBufferRef* p_pBuff)
 	if (!outBuf.LockBuffer(&pOutBuf, &outBufSize)) {
 		return errAlloc;
 	}
-
-	assert(outBufSize == bytes);
 
 	memcpy(pOutBuf, pNals[0].payload, bytes);
 
