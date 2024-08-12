@@ -75,3 +75,133 @@ Note: If you've built the 8-bit version of x265 before, delete the folders and f
 6) Start Davinci Resolve Studio
    
 You can export using X265 if you pick "QUICKTIME" or "MP4" as your FORMAT in Davnci Resolve, then selecting the "X265 (10-bit)" Codec option.
+
+----------------- [LINUX] -----------------
+
+To compile this under LINUX, you'll need certain development tools installed. The commands listed below were tested in UBUNTU 24.04 LTS
+
+Instructions:
+
+[Pre-Req]
+
+Create a directory in your HOME directory named x265_plugin_build
+
+> mkdir ~/x265_plugin_build
+
+Make sure the following package is installed
+
+> apt-get install cmake-curses-gui
+
+[Download x265]
+
+> cd ~/x265_plugin_build
+
+> git clone https://github.com/videolan/x265
+
+[Compile x265]
+
+cd ~/x265_plugin_build/x265/build/linux
+
+> ./make-Makefiles.sh
+
+SELECT or CHANGE th following options
+
+> CMAKE_INSTALL_PREFIX = ../../../x265_pkg_10b
+
+> ENABLE_CLI = OFF
+
+> ENABLE_SHARED = OFF
+
+> HIGH_BIT_DEPTH = ON
+
+> ENABLE_PIC = ON
+
+hit the letter "c" to configure
+
+Note:
+
+Compile and install include / binaries
+
+> make clean
+
+> make -j 8
+
+> make install
+
+[Download x265_encoder_10b]
+
+> cd ~/x265_plugin_build
+
+> ----------------- [LINUX] -----------------
+
+To compile this under LINUX, you'll need certain development tools installed. The commands listed below were tested in UBUNTU 24.04 LTS
+
+Instructions:
+
+[Pre-Req]
+
+Create a directory in your HOME directory named x265_plugin_build
+
+> mkdir ~/x265_plugin_build
+
+Make sure the following package is installed
+
+> apt-get install cmake-curses-gui
+
+[Download x265]
+
+> cd ~/x265_plugin_build
+
+> git clone https://github.com/videolan/x265
+
+[Compile x265]
+
+> cd ~/x265_plugin_build/x265/build/linux
+
+> ./make-Makefiles.sh
+
+SELECT or CHANGE th following options
+
+> CMAKE_INSTALL_PREFIX = ../../../x265_pkg_10b
+
+> ENABLE_CLI = OFF
+
+> ENABLE_SHARED = OFF
+
+> HIGH_BIT_DEPTH = ON
+
+> ENABLE_PIC = ON
+
+hit the letter "c" to configure
+
+Note:
+
+Compile and install include / binaries
+
+make -j 8
+
+make install
+
+[Download x265_encoder_10b]
+
+cd ~/x265_plugin_build
+
+git clone https://github.com/UDaManFunks/x265_encoder_10b
+
+[Compile x265_encoder_10b]
+
+cd ~/x265_plugin_build/x265_encoder_10b
+
+make
+
+[Packaging / Installing]
+
+Create the plugin folder structure
+
+sudo mkdir -p /opt/resolve/IOPlugins/x265_encoder_10b.dvcp.bundle/Contents/Linux-x86-64
+
+Move the newly built binary the to the folder you created
+
+sudo mv bin/x265_encoder_10b.dvcp /opt/resolve/IOPlugins/x265_encoder_10b.dvcp.bundle/Contents/Linux-x86-64/
+
+Restart Davinci Resolve Studio
