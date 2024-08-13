@@ -150,8 +150,8 @@ Move the newly built binary the to the folder you created
 
 > sudo mv bin/x265_encoder_10b.dvcp /opt/resolve/IOPlugins/x265_encoder_10b.dvcp.bundle/Contents/Linux-x86-64/
 
-> chown root:root /opt/resolve/IOPlugins/x265_encoder_10b.dvcp.bundle/Contents/Linux-x86-64/x265_encoder_10b.dvcp
+> sudo chown root:root /opt/resolve/IOPlugins/x265_encoder_10b.dvcp.bundle/Contents/Linux-x86-64/x265_encoder_10b.dvcp
 
-> chmod 755 /opt/resolve/IOPlugins/x265_encoder_10b.dvcp.bundle/Contents/Linux-x86-64/x265_encoder_10b.dvcp
+> sudo chmod 755 /opt/resolve/IOPlugins/x265_encoder_10b.dvcp.bundle/Contents/Linux-x86-64/x265_encoder_10b.dvcp
 
 Restart Davinci Resolve Studio
