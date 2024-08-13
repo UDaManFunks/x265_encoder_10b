@@ -116,9 +116,7 @@ SELECT or CHANGE th following options
 
 > ENABLE_PIC = ON
 
-hit the letter "c" to configure
-
-Note:
+Note: hit the letter "c" to configure
 
 Compile and install include / binaries
 
