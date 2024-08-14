@@ -74,7 +74,7 @@ Note: If you've built the 8-bit version of x265 before, delete the folders and f
 5) Copy the built plugin from C:\VideoEditingUtils\x265_plugin_build\x265_encoder_10b\bin\x265_encoder_10b.dvcp" and place it in the "Win64" folder (which you've created via Step 1-4)
 6) Start Davinci Resolve Studio
    
-You can export using X265 if you pick "QUICKTIME" or "MP4" as your FORMAT in Davnci Resolve, then selecting the "X265 (10-bit)" Codec option.
+You can export using X265 if you pick "QUICKTIME" or "MP4" as your FORMAT in Davnci Resolve, then selecting the "X265 Main10" codec option.
 
 ----------------- [LINUX] -----------------
 
